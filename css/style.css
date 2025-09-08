@@ -1,4 +1,4 @@
- * {
+* {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
@@ -91,3 +91,153 @@
       justify-content: center;
       font-size: 14px;
     }
+
+        .register-container {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 40px;
+      border-radius: 15px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      text-align: center;
+      color: white;
+    }
+
+    .register-container h2 {
+      margin-bottom: 25px;
+      font-size: 28px;
+      color: #ff9800;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+      font-size: 16px;
+    }
+
+    .btn-register {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 30px;
+      background: #ff9800;
+      color: black;
+      font-weight: bold;
+      font-size: 18px;
+      cursor: pointer;
+      transition: transform 0.3s, background 0.3s;
+    }
+
+    .btn-register:hover {
+      transform: scale(1.05);
+      background: #ffc107;
+    }
+
+    .login-link {
+      margin-top: 15px;
+      font-size: 14px;
+      display: block;
+    }
+
+    .login-link a {
+      color: #ff9800;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+
+    /* Admin Dashboard Styling */
+.dashboard-container {
+    background: linear-gradient(135deg, #1e3c72 60%, #00c853 100%);
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(30,60,114,0.25);
+    padding: 48px 36px 36px 36px;
+    max-width: 480px;
+    margin: 60px auto 0 auto;
+    color: #fff;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboard-container h2 {
+    font-size: 2.2rem;
+    color: #ff9800;
+    margin-bottom: 18px;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.25);
+}
+
+.dashboard-container p {
+    font-size: 1.15rem;
+    margin-bottom: 28px;
+    color: #fffde4;
+}
+
+.dashboard-container ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.dashboard-container li {
+    margin-bottom: 18px;
+}
+
+.dashboard-container a {
+    display: inline-block;
+    padding: 12px 28px;
+    background: #ff9800;
+    color: #222;
+    border-radius: 25px;
+    font-weight: bold;
+    font-size: 1.08rem;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    transition: background 0.3s, color 0.3s, transform 0.2s;
+    letter-spacing: 0.5px;
+}
+
+.dashboard-container a:hover {
+    background: #ffc107;
+    color: #1e3c72;
+    transform: scale(1.07) rotate(-2deg);
+}
+
+.dashboard-container::before {
+    content: "🌄";
+    font-size: 5rem;
+    position: absolute;
+    top: -30px;
+    right: 24px;
+    opacity: 0.13;
+    pointer-events: none;
+}
+
+@media (max-width: 600px) {
+    .dashboard-container {
+        padding: 28px 8px 24px 8px;
+        max-width: 98vw;
+    }
+    .dashboard-container h2 {
+        font-size: 1.4rem;
+    }
+}
