@@ -1,13 +1,14 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 if (empty($_SESSION['user_id']) || ($_SESSION['user_role'] ?? '') !== 'onderzoeker') {
     header("Location: login.php");
     exit;
 }
 ?>
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <title>Nieuw Wereldwonder Toevoegen</title>

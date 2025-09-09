@@ -23,7 +23,7 @@ if (empty($_SESSION['user_id']) || ($_SESSION['user_role'] ?? '') !== 'beheerder
         <p>Welcome, <?php echo htmlspecialchars($_SESSION['user_name']); ?>!</p>
         <ul>
             <li><a href="manage_users.php">Manage Users</a></li>
-            <li><a href="manage_content.php">Manage Content</a></li>
+            <li><a href="DashboardWonder.php">Wereldwonderen Beheren</a></li>
             <li><a href="index.php">Go to Homepage</a></li>
             <li><a href="db/logout.php">Logout</a></li>
         </ul>

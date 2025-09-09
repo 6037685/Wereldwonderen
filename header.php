@@ -6,6 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
 <header>
     <nav>
       <a href="index.php">Home</a>
+      <a href="DashboardWonder.php">Wereldwonderen</a>
       <?php if (empty($_SESSION['user_id'])): ?>
         <a href="login.php">Login</a>
         <a href="register.php">Registreren</a>

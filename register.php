@@ -47,6 +47,7 @@ if (isset($_SESSION['register_error'])) {
           <select id="role" name="role" required>
             <option value="">-- Select Role --</option>
             <option value="onderzoeker">Onderzoeker</option>
+            <option value="redacteur">Redacteur</option>
             <option value="bezoeker">Bezoeker</option>
             <option value="archivaris">Archivaris</option>
           </select>
