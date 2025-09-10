@@ -1,6 +1,42 @@
 <?php
 require_once 'db/get_wonders.php';
-session_start(); // Zorg dat de sessie gestart is
+session_start();
+
+// Filteren en zoeken
+$zoek = $_GET['zoek'] ?? '';
+$type = $_GET['type'] ?? '';
+$werelddeel = $_GET['werelddeel'] ?? '';
+$bestaat = $_GET['bestaat'] ?? '';
+$sort = $_GET['sort'] ?? '';
+
+$query = "SELECT * FROM wonders WHERE 1";
+$params = [];
+
+if ($zoek) {
+    $query .= " AND name LIKE :zoek";
+    $params[':zoek'] = "%$zoek%";
+}
+if ($type) {
+    $query .= " AND type = :type";
+    $params[':type'] = $type;
+}
+if ($werelddeel) {
+    $query .= " AND continent = :werelddeel";
+    $params[':werelddeel'] = $werelddeel;
+}
+if ($bestaat !== '') {
+    $query .= " AND bestaat_nog = :bestaat";
+    $params[':bestaat'] = $bestaat;
+}
+if ($sort === 'jaar') {
+    $query .= " ORDER BY bouwjaar ASC";
+} elseif ($sort === 'naam') {
+    $query .= " ORDER BY name ASC";
+}
+
+$stmt = $pdo->prepare($query);
+$stmt->execute($params);
+$wereldwonderen = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="nl">
@@ -12,9 +48,35 @@ session_start(); // Zorg dat de sessie gestart is
 <body>
 <?php include 'header.php'; ?>
 <main>
-    <div class="register-container" style="background:transparent;box-shadow:none;">
-        <h2>🌍 Alle Wereldwonderen</h2>
-    </div>
+    <form method="get" class="filter-bar" style="margin-bottom:32px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:center;">
+        <input type="text" name="zoek" placeholder="Zoek op naam..." value="<?= htmlspecialchars($zoek) ?>" style="padding:8px;border-radius:6px;border:1px solid #ccc;">
+        <select name="type" style="padding:8px;border-radius:6px;">
+            <option value="">Type</option>
+            <option value="klassiek" <?= $type=='klassiek'?'selected':''; ?>>Klassiek</option>
+            <option value="modern" <?= $type=='modern'?'selected':''; ?>>Modern</option>
+        </select>
+        <select name="werelddeel" style="padding:8px;border-radius:6px;">
+            <option value="">Werelddeel</option>
+            <option value="Europa" <?= $werelddeel=='Europa'?'selected':''; ?>>Europa</option>
+            <option value="Azië" <?= $werelddeel=='Azië'?'selected':''; ?>>Azië</option>
+            <option value="Afrika" <?= $werelddeel=='Afrika'?'selected':''; ?>>Afrika</option>
+            <option value="Amerika" <?= $werelddeel=='Amerika'?'selected':''; ?>>Amerika</option>
+            <option value="Oceanië" <?= $werelddeel=='Oceanië'?'selected':''; ?>>Oceanië</option>
+        </select>
+        <select name="bestaat" style="padding:8px;border-radius:6px;">
+            <option value="">Bestaat nog?</option>
+            <option value="1" <?= $bestaat==='1'?'selected':''; ?>>Ja</option>
+            <option value="0" <?= $bestaat==='0'?'selected':''; ?>>Nee</option>
+        </select>
+        <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'archivaris'): ?>
+            <select name="sort" style="padding:8px;border-radius:6px;">
+                <option value="">Sorteren</option>
+                <option value="jaar" <?= $sort=='jaar'?'selected':''; ?>>Jaartal</option>
+                <option value="naam" <?= $sort=='naam'?'selected':''; ?>>Alfabet</option>
+            </select>
+        <?php endif; ?>
+        <button type="submit" style="padding:8px 18px;border-radius:6px;background:#ff9800;color:#222;font-weight:bold;border:none;">Filter</button>
+    </form>
     <div class="wonders-grid">
         <?php if (empty($wereldwonderen)): ?>
             <p style="color:#1e3c72;font-weight:bold;">Er zijn nog geen wereldwonderen toegevoegd.</p>

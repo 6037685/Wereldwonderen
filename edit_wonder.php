@@ -1,9 +1,18 @@
 <?php
 session_start();
-if (!isset($_SESSION['user_id']) || ($_SESSION['user_role'] ?? '') !== 'onderzoeker') {
+
+// Check of ingelogd
+if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
 }
+
+// Alleen onderzoekers en archivarissen mogen dit bewerken
+$user_role = $_SESSION['user_role'] ?? '';
+if (!in_array($user_role, ['onderzoeker','archivaris'])) {
+    die("Je hebt geen rechten om dit wereldwonder te bewerken.");
+}
+
 require_once 'db/conectie.php';
 
 $id = intval($_GET['id'] ?? 0);
