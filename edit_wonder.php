@@ -1,13 +1,11 @@
 <?php
 session_start();
 
-// Check of ingelogd
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
 }
 
-// Alleen onderzoekers en archivarissen mogen dit bewerken
 $user_role = $_SESSION['user_role'] ?? '';
 if (!in_array($user_role, ['onderzoeker','archivaris'])) {
     die("Je hebt geen rechten om dit wereldwonder te bewerken.");

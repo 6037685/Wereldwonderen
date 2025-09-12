@@ -8,10 +8,21 @@ if (!$id) die("Geen wereldwonder opgegeven!");
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SESSION['user_role'] === 'archivaris') {
     $bouwjaar = $_POST['bouwjaar'] ?? null;
     $historische_info = $_POST['historische_info'] ?? null;
-    $stmt = $pdo->prepare("UPDATE wonders SET bouwjaar = :bouwjaar, historische_info = :historische_info WHERE id = :id");
+
+    $document_path = $wonder['document'] ?? null;
+    if (isset($_FILES['document']) && $_FILES['document']['error'] === UPLOAD_ERR_OK) {
+        $ext = strtolower(pathinfo($_FILES['document']['name'], PATHINFO_EXTENSION));
+        if (in_array($ext, ['pdf', 'doc', 'docx'])) {
+            $document_path = 'uploads/' . uniqid('doc_') . '.' . $ext;
+            move_uploaded_file($_FILES['document']['tmp_name'], $document_path);
+        }
+    }
+
+    $stmt = $pdo->prepare("UPDATE wonders SET bouwjaar = :bouwjaar, historische_info = :historische_info, document = :document WHERE id = :id");
     $stmt->execute([
         ':bouwjaar' => $bouwjaar,
         ':historische_info' => $historische_info,
+        ':document' => $document_path,
         ':id' => $id
     ]);
 }
@@ -60,6 +71,11 @@ $foto = (!empty($wonder['photo']) && $wonder['photo_approved'] == 1)
     <?php if (!empty($wonder['historische_info'])): ?>
         <p><?= nl2br(htmlspecialchars($wonder['historische_info'])); ?></p>
     <?php endif; ?>
+    <?php if (!empty($wonder['document'])): ?>
+    <p>
+        📄 <a href="<?= htmlspecialchars($wonder['document']); ?>" target="_blank">Download reisverslag/document</a>
+    </p>
+<?php endif; ?>
 
     <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'redacteur' && !empty($wonder['photo']) && $wonder['photo_approved'] == 0): ?>
         <a href="wereldwonder.php?id=<?= $wonder['id'] ?>&approve=1" class="btn-approve" style="background:#43a047;color:#fff;padding:10px;border-radius:5px;text-decoration:none;">
@@ -70,12 +86,15 @@ $foto = (!empty($wonder['photo']) && $wonder['photo_approved'] == 1)
     <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'archivaris'): ?>
         <hr>
         <h3>Bouwjaar & Historische info toevoegen/bewerken</h3>
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             <label>Bouwjaar:<br>
                 <input type="text" name="bouwjaar" value="<?= htmlspecialchars($wonder['bouwjaar'] ?? '') ?>">
             </label><br><br>
             <label>Historische info:<br>
                 <textarea name="historische_info" rows="5" cols="50"><?= htmlspecialchars($wonder['historische_info'] ?? '') ?></textarea>
+            </label><br><br>
+            <label>Reisverslag/document toevoegen:<br>
+                <input type="file" name="document" accept=".pdf,.doc,.docx">
             </label><br><br>
             <button type="submit">Opslaan</button>
         </form>
