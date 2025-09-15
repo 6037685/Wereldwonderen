@@ -26,12 +26,19 @@ if (isset($_GET['loc_id']) && isset($_GET['action'])) {
     } elseif ($action === 'reject') {
         $stmt = $pdo->prepare("UPDATE wonders SET location_approved = 0 WHERE id = :id");
         $stmt->execute([':id' => $locId]);
-        // Optioneel: later notificatie sturen naar archivaris/onderzoeker
     }
 
     header("Location: redacteur_overzicht.php");
     exit;
 }
+
+// Laatst toegevoegde wonderen
+$stmtRecent = $pdo->query("SELECT w.id, w.name, w.created_at, u.name AS added_by_name
+                           FROM wonders w
+                           LEFT JOIN users u ON w.added_by = u.id
+                           ORDER BY w.created_at DESC
+                           LIMIT 10");
+$recentWonders = $stmtRecent->fetchAll();
 
 // Haal bijdragen op die nog niet zijn goedgekeurd (foto)
 $stmt = $pdo->query("SELECT w.id, w.name, w.location, w.photo, u.name AS added_by_name 
@@ -54,7 +61,7 @@ $allWonders = $stmt2->fetchAll();
     <title>Redacteur Overzicht</title>
     <link rel="stylesheet" href="css/style.css">
     <style>
-        .pending-item, .wonder-item { 
+        .pending-item, .wonder-item, .recent-item { 
             border:1px solid #ddd; 
             padding:15px; 
             margin-bottom:15px; 
@@ -69,12 +76,28 @@ $allWonders = $stmt2->fetchAll();
 <?php include 'header.php'; ?>
 <main>
 <div class="container">
-    <h2>Bijdragen die nog goedgekeurd moeten worden (foto's)</h2>
 
+    <!-- Laatst toegevoegde wonderen -->
+    <h2>Laatst toegevoegde wonderen</h2>
+    <?php if(empty($recentWonders)): ?>
+        <p>Geen wonderen gevonden.</p>
+    <?php else: ?>
+        <?php foreach($recentWonders as $w): ?>
+            <div class="recent-item">
+                <strong><?= htmlspecialchars($w['name']); ?></strong><br>
+                <small>Toegevoegd op: <?= date('d-m-Y H:i', strtotime($w['created_at'])); ?> | Toegevoegd door: <?= htmlspecialchars($w['added_by_name']); ?></small><br>
+                <a href="wereldwonder.php?id=<?= $w['id']; ?>" class="btn-view">Bekijk detail</a>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+
+    <hr>
+
+    <!-- Bijdragen die nog goedgekeurd moeten worden -->
+    <h2>Bijdragen die nog goedgekeurd moeten worden (foto's)</h2>
     <?php if (isset($_GET['approved'])): ?>
         <p style="color:green;">✅ Bijdrage is goedgekeurd!</p>
     <?php endif; ?>
-
     <?php if (empty($pendingPhotos)): ?>
         <p>✅ Er zijn momenteel geen bijdragen die goedgekeurd moeten worden.</p>
     <?php else: ?>
@@ -95,6 +118,8 @@ $allWonders = $stmt2->fetchAll();
     <?php endif; ?>
 
     <hr>
+
+    <!-- Controleer locaties (GPS) -->
     <h2>Controleer locaties (GPS)</h2>
     <?php if(empty($allWonders)): ?>
         <p>Geen wonderen gevonden.</p>
