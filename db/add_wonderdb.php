@@ -23,7 +23,6 @@ if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
             header("Location: ../add_wonder.php?error=upload");
             exit;
         }
-        // Opslaan zonder ../ voor database
         $photoPath = 'uploads/' . $newName;
     } else {
         header("Location: ../add_wonder.php?error=type");

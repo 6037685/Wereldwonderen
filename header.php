@@ -14,10 +14,17 @@ if (session_status() === PHP_SESSION_NONE) {
         <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'beheerder'): ?>
           <a href="admin_dashboard.php">Admin Dashboard</a>
         <?php endif; ?>
+
         <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'onderzoeker'): ?>
           <a href="add_wonder.php">Nieuw Wereldwonder</a>
         <?php endif; ?>
+
+        <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'redacteur'): ?>
+          <a href="redacteur_overzicht.php">Goed te keuren</a>
+        <?php endif; ?>
+
         <a href="db/logout.php">Logout</a>
       <?php endif; ?>
     </nav>
 </header>
+          
