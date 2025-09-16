@@ -508,3 +508,45 @@ input[type="file"] {
     letter-spacing: 1px;
 }
 
+.dashboard-container {
+    width: 100%;
+    overflow-x: auto; /* horizontale scroll als nodig */
+    -webkit-overflow-scrolling: touch; /* smooth scroll op mobiel */
+    margin-top: 16px;
+}
+
+/* Tabel styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px; /* voorkomt te smalle kolommen */
+}
+
+th, td {
+    padding: 8px;
+    border: 1px solid #ccc;
+    text-align: left;
+    white-space: nowrap; /* voorkomt dat tekst afbreekt */
+}
+
+th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    position: sticky; /* header blijft zichtbaar bij scrollen */
+    top: 0;
+    z-index: 1;
+}
+
+/* Pre-styling voor oude/nieuwe waarde kolommen */
+pre {
+    margin: 0;
+    font-family: monospace;
+    max-width: 300px; /* voorkomt dat pre te breed wordt */
+    overflow-x: auto; /* horizontale scroll voor lange JSON */
+}
+
+/* Optional: zebra stripe voor leesbaarheid */
+tbody tr:nth-child(even) {
+    background-color: #fafafa;
+}
+ 

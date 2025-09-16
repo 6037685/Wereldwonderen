@@ -10,6 +10,8 @@ if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'beheerder') {
     $werelddeel_stats = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+
+
 // CSV export
 if (isset($_GET['export']) && $_SESSION['user_role'] === 'beheerder') {
     header('Content-Type: text/csv');
@@ -111,19 +113,32 @@ $topViewed = $stmtTop->fetchAll();
             <?php if (empty($wereldwonderen)): ?>
                 <p style="color:#1e3c72; font-weight:bold;">Er zijn nog geen wereldwonderen toegevoegd.</p>
             <?php else: ?>
-                <?php foreach ($wereldwonderen as $wonder): ?>
-                    <div class="wonder-card">
-                        <?php 
-                            $foto = (!empty($wonder['photo']) && $wonder['photo_approved'] == 1) 
-                                    ? htmlspecialchars($wonder['photo']) 
-                                    : "images/default.jpg"; 
-                        ?>
-                        <img src="<?php echo $foto; ?>" alt="Foto van <?php echo htmlspecialchars($wonder['name']); ?>">
-                        <h3><?php echo htmlspecialchars($wonder['name']); ?></h3>
-                        <div class="loc">📍 <?php echo htmlspecialchars($wonder['location']); ?></div>
-                        <a href="wereldwonder.php?id=<?php echo $wonder['id']; ?>">Bekijk</a>
-                    </div>
-                <?php endforeach; ?>
+<?php foreach ($wereldwonderen as $wonder): ?>
+    <div class="wonder-card">
+        <?php 
+            $foto = (!empty($wonder['photo']) && $wonder['photo_approved'] == 1) 
+                    ? htmlspecialchars($wonder['photo']) 
+                    : "images/default.jpg"; 
+        ?>
+        <img src="<?php echo $foto; ?>" alt="Foto van <?php echo htmlspecialchars($wonder['name']); ?>">
+        <h3><?php echo htmlspecialchars($wonder['name']); ?></h3>
+        <div class="loc">📍 <?php echo htmlspecialchars($wonder['location']); ?></div>
+
+        <!-- Bekijk link -->
+        <a href="wereldwonder.php?id=<?php echo $wonder['id']; ?>" style="display:inline-block; margin-right:8px;">Bekijk</a>
+
+        <!-- Alleen voor beheerders: Verwijderknop -->
+        <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'beheerder'): ?>
+            <form method="post" action="delete_wonder.php" onsubmit="return confirm('Weet je zeker dat je dit wereldwonder wilt verwijderen?');" style="display:inline-block; margin-top:8px;">
+                <input type="hidden" name="wonder_id" value="<?= $wonder['id'] ?>">
+                <button type="submit" style="padding:6px 12px; background:#e53935; color:#fff; border:none; border-radius:4px; cursor:pointer;">
+                    Verwijder
+                </button>
+            </form>
+        <?php endif; ?>
+    </div>
+<?php endforeach; ?>
+
             <?php endif; ?>
         </div>
     </div>
